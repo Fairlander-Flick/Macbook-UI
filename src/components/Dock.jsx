@@ -1,10 +1,10 @@
 import React from 'react';
-import { Camera, Folder, Chrome, Settings } from 'lucide-react';
+import { Camera, Folder, Compass, Settings } from 'lucide-react';
 
 export default function Dock({ onAppClick }) {
   const apps = [
     { id: 'finder', name: 'Finder', icon: Folder, color: 'text-blue-500' },
-    { id: 'safari', name: 'Safari', icon: Chrome, color: 'text-blue-400' },
+    { id: 'safari', name: 'Safari', icon: Compass, color: 'text-blue-400' },
     { id: 'camera', name: 'Photo Booth', icon: Camera, color: 'text-gray-700' },
     { id: 'settings', name: 'System Settings', icon: Settings, color: 'text-gray-500' }
   ];
