@@ -5,6 +5,7 @@ export default function CameraApp({ width = 640, height = 452 }) {
   const streamRef = useRef(null);
   const [photos, setPhotos] = useState([]); // thumbnail list
   const [ready, setReady] = useState(false);
+  const [mode, setMode] = useState('photo');
 
   useEffect(() => {
     async function setup() {
@@ -38,8 +39,6 @@ export default function CameraApp({ width = 640, height = 452 }) {
     a.click();
   };
 
-  const liveH = height - 28 - 70; // subtract title bar + bottom bar
-
   return (
     <div style={{ width, height: height - 28, background: '#1a1a1a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Live camera feed */}
@@ -53,31 +52,40 @@ export default function CameraApp({ width = 640, height = 452 }) {
             Kamera bağlanıyor...
           </div>
         )}
-      </div>
 
-      {/* Thumbnail strip */}
-      {photos.length > 0 && (
-        <div style={{
-          display: 'flex', gap: '6px', padding: '6px 10px',
-          background: 'rgba(0,0,0,0.6)',
-          overflowX: 'auto',
-          borderTop: '0.5px solid rgba(255,255,255,0.08)',
-        }}>
-          {photos.map((p, i) => (
-            <img
-              key={i} src={p} alt=""
-              onClick={() => savePhoto(p)}
-              title="İndirmek için tıkla"
-              style={{
-                height: '52px', width: '70px', objectFit: 'cover',
-                borderRadius: '5px', cursor: 'pointer',
-                border: i === 0 ? '2px solid white' : '2px solid rgba(255,255,255,0.2)',
-                flexShrink: 0,
-              }}
-            />
-          ))}
-        </div>
-      )}
+        {/* Thumbnail overlay — bottom-right of camera feed */}
+        {photos.length > 0 && (
+          <div style={{
+            position: 'absolute',
+            bottom: '8px',
+            right: '8px',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '4px',
+            zIndex: 10,
+          }}>
+            {photos.slice(0, 4).map((p, i) => (
+              <div
+                key={i}
+                onClick={() => savePhoto(p)}
+                title="Click to download"
+                style={{
+                  width: '70px',
+                  height: '52px',
+                  borderRadius: '4px',
+                  overflow: 'hidden',
+                  border: i === 0 ? '2px solid white' : '1.5px solid rgba(255,255,255,0.4)',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                }}
+              >
+                <img src={p} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Bottom controls bar */}
       <div style={{
@@ -90,18 +98,18 @@ export default function CameraApp({ width = 640, height = 452 }) {
       }}>
         {/* Left controls */}
         <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-          <CtrlBtn title="Grid View">
+          <CtrlBtn title="Grid View" active={mode === 'grid'} onClick={() => setMode('grid')}>
             <svg viewBox="0 0 20 20" width="18" height="18" fill="rgba(255,255,255,0.7)">
               <rect x="1" y="1" width="7" height="7" rx="1.5"/><rect x="12" y="1" width="7" height="7" rx="1.5"/>
               <rect x="1" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/>
             </svg>
           </CtrlBtn>
-          <CtrlBtn title="Portrait Mode">
+          <CtrlBtn title="Portrait Mode" active={mode === 'photo'} onClick={() => setMode('photo')}>
             <svg viewBox="0 0 16 20" width="14" height="18" fill="rgba(255,255,255,0.7)">
               <circle cx="8" cy="6" r="4"/><path d="M1 19c0-4 14-4 14 0" fill="rgba(255,255,255,0.7)"/>
             </svg>
           </CtrlBtn>
-          <CtrlBtn title="Video">
+          <CtrlBtn title="Video" active={mode === 'video'} onClick={() => setMode('video')}>
             <svg viewBox="0 0 22 16" width="20" height="14" fill="rgba(255,255,255,0.7)">
               <rect x="1" y="2" width="13" height="12" rx="2"/>
               <path d="M14 6l7-3v10l-7-3z"/>
@@ -111,17 +119,35 @@ export default function CameraApp({ width = 640, height = 452 }) {
 
         {/* Center: Shutter */}
         <button onClick={takePhoto} style={{
-          width: '46px', height: '46px', borderRadius: '50%',
-          border: '3px solid rgba(255,255,255,0.8)',
-          background: 'transparent', cursor: 'pointer', outline: 'none',
+          width: '52px', height: '52px', borderRadius: '50%',
+          border: '2.5px solid rgba(255,255,255,0.5)',
+          background: 'transparent',
+          cursor: 'pointer', outline: 'none',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'transform 0.1s',
-          boxShadow: '0 0 0 1px rgba(0,0,0,0.4)',
+          padding: 0,
+          boxShadow: 'none',
         }}
           onMouseDown={e => e.currentTarget.style.transform = 'scale(0.92)'}
           onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
         >
-          <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#FF3B30' }}/>
+          <div style={{
+            width: '42px', height: '42px', borderRadius: '50%',
+            background: '#E8000A',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+              {/* Camera body */}
+              <rect x="2" y="7" width="20" height="14" rx="2.5" fill="white"/>
+              {/* Lens ring */}
+              <circle cx="12" cy="14" r="4.5" fill="#E8000A"/>
+              <circle cx="12" cy="14" r="3" fill="white"/>
+              {/* Viewfinder bump */}
+              <rect x="8" y="4" width="8" height="4" rx="1.5" fill="white"/>
+              {/* Flash dot */}
+              <circle cx="18.5" cy="10" r="1" fill="#E8000A"/>
+            </svg>
+          </div>
         </button>
 
         {/* Right: Effects */}
@@ -138,16 +164,26 @@ export default function CameraApp({ width = 640, height = 452 }) {
   );
 }
 
-function CtrlBtn({ children, title }) {
+function CtrlBtn({ children, title, active, onClick }) {
   const [h, setH] = React.useState(false);
   return (
-    <button title={title} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+    <button
+      title={title}
+      onClick={onClick}
+      onMouseEnter={() => setH(true)}
+      onMouseLeave={() => setH(false)}
       style={{
-        background: h ? 'rgba(255,255,255,0.12)' : 'transparent',
-        border: 'none', cursor: 'default', padding: '6px', borderRadius: '6px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: active ? 'rgba(255,255,255,0.22)' : h ? 'rgba(255,255,255,0.12)' : 'transparent',
+        border: active ? '0.5px solid rgba(255,255,255,0.3)' : 'none',
+        cursor: 'default',
+        padding: '6px',
+        borderRadius: '6px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         transition: 'background 0.1s',
-      }}>
+      }}
+    >
       {children}
     </button>
   );
