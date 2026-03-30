@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import MenuBar from './components/MenuBar';
 import Dock from './components/Dock';
 import Desktop from './components/Desktop';
