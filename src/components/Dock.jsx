@@ -74,12 +74,14 @@ function DockIcon({ app, isOpen, onAppClick }) {
           cursor: 'pointer',
           filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.45))',
           flexShrink: 0,
+          borderRadius: '22%',
+          overflow: 'hidden',
         }}
       >
         <img
           src={app.icon}
           alt={app.name}
-          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           draggable={false}
         />
       </div>
