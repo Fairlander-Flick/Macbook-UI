@@ -24,22 +24,23 @@ const MacbookSVG = () => (
   </svg>
 );
 
-// AirPod icon
-const AirPodSVG = () => (
-  <svg viewBox="0 0 18 28" width="10" height="16" fill="rgba(255,255,255,0.7)">
-    <ellipse cx="9" cy="7" rx="6" ry="7"/>
-    <rect x="7.5" y="13" width="3" height="10" rx="1.5"/>
-    <ellipse cx="9" cy="23" rx="4" ry="2.5"/>
-  </svg>
-);
+const DEVICES = [
+  { pct: 72 },
+  { pct: 68 },
+  { pct: 55 },
+];
 
 export default function BatteryWidget() {
+<<<<<<< main
+  const macPct = 84;
+=======
   const macPct = 72;
   const devices = [
     { label: 'AirPods L', pct: Math.floor(Math.random() * 30 + 60) },
     { label: 'AirPods R', pct: Math.floor(Math.random() * 30 + 60) },
     { label: 'Case',      pct: Math.floor(Math.random() * 40 + 40) },
   ];
+>>>>>>> main
 
   return (
     <div style={{
@@ -61,28 +62,17 @@ export default function BatteryWidget() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
         <div style={{ position: 'relative', width: '44px', height: '44px' }}>
           <Ring pct={macPct} color="#30D158" size={44} stroke={3.5}/>
-          <div style={{
-            position: 'absolute', inset: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <MacbookSVG />
           </div>
         </div>
         <span style={{ color: 'white', fontSize: '12px', fontWeight: 500 }}>{macPct} %</span>
       </div>
 
-      {/* AirPods */}
-      {devices.map((d, i) => (
+      {/* Other devices — plain rings, no icon */}
+      {DEVICES.map((d, i) => (
         <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-          <div style={{ position: 'relative', width: '40px', height: '40px' }}>
-            <Ring pct={d.pct} color="rgba(255,255,255,0.5)" size={40} stroke={3}/>
-            <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <AirPodSVG />
-            </div>
-          </div>
+          <Ring pct={d.pct} color="rgba(255,255,255,0.45)" size={40} stroke={3}/>
         </div>
       ))}
     </div>
